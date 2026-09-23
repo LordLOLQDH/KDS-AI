@@ -2,6 +2,8 @@
 
 Ein KI-gestützter Assistent für KDS.
 
+![KDS AI Logo](IMG_3297.jpeg)
+
 ## Aktuelle Version
 
 **v1.7**
