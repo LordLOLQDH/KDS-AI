@@ -1,6 +1,6 @@
-const VERSION="1.5";
+const VERSION="1.6";
 const ENDPOINT="https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat";
-const messages=document.querySelector("#messages"),form=document.querySelector("#chat"),input=document.querySelector("#input");
+const messages=document.querySelector("#messages"),form=document.querySelector("#chat"),input=document.querySelector("#input"),updateApp=document.querySelector("#updateApp");
 let messageCount=0;
 function add(text,cls){
   const el=document.createElement("div");
@@ -9,6 +9,11 @@ function add(text,cls){
   messages.appendChild(el);
   el.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
+updateApp.addEventListener("click",()=>{
+  updateApp.disabled=true;
+  updateApp.textContent="Aktualisiere …";
+  window.location.replace(window.location.pathname+"?update="+Date.now());
+});
 form.addEventListener("submit",async e=>{
   e.preventDefault();
   const message=input.value.trim();
