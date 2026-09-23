@@ -4,7 +4,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v1.5**
+**v1.6**
 
 ## Funktionen
 
@@ -17,10 +17,11 @@ Ein KI-gestützter Assistent für KDS.
 - Keine API-Schlüssel im Frontend
 - Responsive Darstellung für Smartphone und Desktop
 - Überarbeitetes, reduziertes KDS-Interface
+- Manueller Aktualisieren-Button zum Umgehen alter Browser-Caches
 
 ## Projektaufbau
 
-```
+```text
 GitHub Pages
     ↓
 KDS AI Frontend
@@ -34,19 +35,23 @@ KDS-Wissensdatenbank + KI
 
 - `index.html` – Oberfläche der Web-App
 - `style.css` – Design und responsive Darstellung
-- `app.js` – Chat-Logik und Verbindung zum Backend
+- `app.js` – Chat-Logik, Verbindung zum Backend und manuelles Aktualisieren
 - `supabase/functions/ai-chat/` – KI-Backend
 - `README.md` – Projektdokumentation
 
 ## Versionierung
 
-Die Versionsnummer wird bei Änderungen am Projekt aktualisiert.
+Die Versionsnummer wird bei Änderungen am Frontend aktualisiert.
 
 Beispiel:
 
-`1.1 → 1.2 → 1.3 → 1.4 → 1.5 → ... → 1.9 → 2.0`
+`1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6 → ... → 1.9 → 2.0`
 
 Größere Funktionsänderungen können einen Sprung auf eine neue Hauptversion auslösen.
+
+## Manueller Update
+
+Wenn der Browser eine ältere Version der Website aus dem Cache geladen hat, kann über **„Aktualisieren“** oben rechts ein neuer Seitenaufruf mit Cache-Busting ausgelöst werden. Dadurch wird die aktuelle GitHub-Pages-Version neu geladen.
 
 ## Sicherheit
 
