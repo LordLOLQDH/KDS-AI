@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v1.8**
+**v1.9**
 
 ## Funktionen
 
@@ -54,7 +54,7 @@ Bei einer allgemeinen Frage nach Kontaktmöglichkeiten soll die KI nicht automat
 
 Die KDS-WhatsApp-Nummer `+49 175 4081426` darf die KI als Kontaktmöglichkeit auch bei einer allgemeinen Kontaktfrage nennen.
 
-Die private/administrative E-Mail `adam_kraus@icloud.com` darf niemals an Kunden herausgegeben werden.
+Die administrative/private E-Mail `adam_kraus@icloud.com` darf genannt werden, wenn ausdrücklich nach der Admin-E-Mail oder privaten E-Mail gefragt wird. Sie darf nicht automatisch als allgemeine Kundenkontaktadresse verwendet werden.
 
 ## Versionierung
 
