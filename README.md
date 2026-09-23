@@ -4,7 +4,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v1.6**
+**v1.7**
 
 ## Funktionen
 
@@ -18,6 +18,7 @@ Ein KI-gestützter Assistent für KDS.
 - Responsive Darstellung für Smartphone und Desktop
 - Überarbeitetes, reduziertes KDS-Interface
 - Manueller Aktualisieren-Button zum Umgehen alter Browser-Caches
+- KDS-Logo als Website-Logo, Browser-Icon und Social-Share-Bild
 
 ## Projektaufbau
 
