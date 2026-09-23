@@ -4,7 +4,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v1.1**
+**v1.3**
 
 ## Funktionen
 
