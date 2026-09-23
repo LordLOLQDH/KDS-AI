@@ -38,8 +38,19 @@ KDS-Wissensdatenbank + KI
 - `index.html` – Oberfläche der Web-App
 - `style.css` – Design und responsive Darstellung
 - `app.js` – Chat-Logik, Verbindung zum Backend und manuelles Aktualisieren
+- `IMG_3297.jpeg` – KDS-Logo für Website, Browser-Icon und Social Sharing
 - `supabase/functions/ai-chat/` – KI-Backend
 - `README.md` – Projektdokumentation
+
+## Kontaktregeln der KDS-KI
+
+Die KDS-KI darf die geschäftliche E-Mail `kraus-digital@proton.me` als Kontaktadresse nennen, wenn ein Kunde ausdrücklich danach fragt.
+
+Bei einer allgemeinen Frage nach Kontaktmöglichkeiten soll die KI nicht automatisch die E-Mail-Adresse nennen. Sie kann stattdessen anbieten, die geschäftliche E-Mail-Adresse zu geben.
+
+Die KDS-WhatsApp-Nummer `+49 175 4081426` darf die KI als Kontaktmöglichkeit auch bei einer allgemeinen Kontaktfrage nennen.
+
+Die private/administrative E-Mail `adam_kraus@icloud.com` darf niemals an Kunden herausgegeben werden.
 
 ## Versionierung
 
