@@ -10,7 +10,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Funktionen
 
-- KDS-Infos können automatisch die direkte WhatsApp-Kontaktmöglichkeit enthalten\n- Sicherer Admin-Modus über `KDS-Adm1n!` mit serverseitigem Admin-Token\n- Admin kann dauerhafte kundenrelevante Informationen per Chat eingeben\n- KI extrahiert Fakten aus Admin-Nachrichten und speichert sie in der Supabase-Wissensbasis\n- Gespeicherte Fakten werden bei späteren Kundenfragen wieder als Wissensbasis verwendet\n- Geheimnisartige Inhalte wie API-Keys, Tokens und Passwörter werden nicht als Wissensfakten gespeichert
+- KDS-Infos können automatisch die direkte WhatsApp-Kontaktmöglichkeit enthalten\n- Sicherer Admin-Modus über the internen Admin-Zugang mit serverseitigem Admin-Token\n- Admin kann dauerhafte kundenrelevante Informationen per Chat eingeben\n- KI extrahiert Fakten aus Admin-Nachrichten und speichert sie in der Supabase-Wissensbasis\n- Gespeicherte Fakten werden bei späteren Kundenfragen wieder als Wissensbasis verwendet\n- Geheimnisartige Inhalte wie API-Keys, Tokens und Passwörter werden nicht als Wissensfakten gespeichert
 
 - Moderne GitHub-Pages-Oberfläche
 - Chat mit dem KDS AI-Assistenten
