@@ -19,6 +19,7 @@ Ein KI-gestützter Assistent für KDS.
 - Überarbeitetes, reduziertes KDS-Interface
 - Manueller Aktualisieren-Button zum Umgehen alter Browser-Caches
 - KDS-Logo als Website-Logo, Browser-Icon und Social-Share-Bild
+- `IMG_3297.jpeg` als zentrale Logo-Datei für Website, Browser und Teilen
 
 ## Projektaufbau
 
