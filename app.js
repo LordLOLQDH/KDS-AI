@@ -1,4 +1,4 @@
-const VERSION = "4.1";
+const VERSION = "4.2";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 
 const messages = document.querySelector("#messages");
@@ -6,7 +6,7 @@ const form = document.querySelector("#chat");
 const input = document.querySelector("#input");
 const updateApp = document.querySelector("#updateApp");
 
-let messageCount = 0;
+let messageCount = Number(sessionStorage.getItem("kds_ai_message_count") || "0");
 let adminToken = "";
 let adminMode = false;
 let selectedModel = "default";
@@ -81,11 +81,21 @@ form.addEventListener("submit", async (e) => {
 
   input.value = "";
   add(message, "user");
+
+  const normalizedMessage = message.toLowerCase().replace(/[!,.?]/g, "").trim();
+  if (/^(hallo|hi|hey|guten morgen|guten tag|guten abend)$/.test(normalizedMessage)) {
+    add("Hallo! Wie kann ich dir helfen?", "ai");
+    input.focus();
+    return;
+  }
+
   add("…", "ai");
 
   const pending = messages.lastElementChild;
   const isFirstMessage = messageCount === 0;
   messageCount++;
+  sessionStorage.setItem("kds_ai_message_count", String(messageCount));
+  sessionStorage.setItem("kds_ai_message_count", String(messageCount));
 
   try {
     const r = await fetch(ENDPOINT, {
