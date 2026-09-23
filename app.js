@@ -1,4 +1,4 @@
-const VERSION = "3.0";
+const VERSION = "4.0";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 
 const messages = document.querySelector("#messages");
@@ -9,6 +9,7 @@ const updateApp = document.querySelector("#updateApp");
 let messageCount = 0;
 let adminToken = "";
 let adminMode = false;
+let selectedModel = "default";
 
 function setAdminStatus() {
   const status = document.querySelector("#modeStatus");
@@ -16,6 +17,20 @@ function setAdminStatus() {
 }
 
 setAdminStatus();
+
+const modelSelect = document.querySelector("#modelSelect");
+if (modelSelect) {
+  selectedModel = localStorage.getItem("kds_ai_model") || "default";
+  if ([...modelSelect.options].some(o => o.value === selectedModel)) {
+    modelSelect.value = selectedModel;
+  } else {
+    selectedModel = "default";
+  }
+  modelSelect.addEventListener("change", () => {
+    selectedModel = modelSelect.value;
+    localStorage.setItem("kds_ai_model", selectedModel);
+  });
+}
 
 function add(text, cls) {
   const el = document.createElement("div");
