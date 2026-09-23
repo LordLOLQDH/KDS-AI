@@ -25,10 +25,24 @@ function add(text, cls) {
   el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-updateApp.addEventListener("click", () => {
+updateApp.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
   updateApp.disabled = true;
   updateApp.textContent = "Aktualisiere …";
-  window.location.replace(window.location.pathname + "?update=" + Date.now());
+
+  // Admin-Status bewusst verwerfen.
+  adminToken = "";
+  adminMode = false;
+
+  // Cache-Busting für die aktuelle Seite.
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.searchParams.set("update", Date.now().toString());
+
+  // Navigation statt location.reload(), damit auch die HTML-Version neu geladen wird.
+  window.location.href = url.toString();
 });
 
 form.addEventListener("submit", async (e) => {
