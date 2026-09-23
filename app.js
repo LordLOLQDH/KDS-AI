@@ -1,4 +1,4 @@
-const VERSION = "2.2";
+const VERSION = "2.3";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 
 const messages = document.querySelector("#messages");
