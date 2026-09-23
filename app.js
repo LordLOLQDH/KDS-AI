@@ -7,7 +7,7 @@ const input = document.querySelector("#input");
 const updateApp = document.querySelector("#updateApp");
 
 let messageCount = 0;
-let adminMode = localStorage.getItem("kdsAdminToken") !== null;
+let adminToken = "";\nlet adminMode = false;
 
 function setAdminStatus() {
   const status = document.querySelector("#modeStatus");
@@ -37,6 +37,18 @@ form.addEventListener("submit", async (e) => {
   const message = input.value.trim();
   if (!message) return;
 
+  // /exit beendet den Admin-Modus sofort.
+  if (message.toLowerCase() === "/exit") {
+    input.value = "";
+    adminToken = "";
+    adminMode = false;
+    setAdminStatus();
+    add(message, "user");
+    add("Admin-Modus beendet.", "ai");
+    input.focus();
+    return;
+  }
+
   input.value = "";
   add(message, "user");
   add("…", "ai");
@@ -54,15 +66,21 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify({
         message,
         isFirstMessage,
-        adminToken: localStorage.getItem("kdsAdminToken") || ""
+        adminToken
       })
     });
 
     const d = await r.json();
 
     if (d.adminToken) {
-      localStorage.setItem("kdsAdminToken", d.adminToken);
+      adminToken = d.adminToken;
       adminMode = true;
+      setAdminStatus();
+    }
+
+    if (d.mode === "exit") {
+      adminToken = "";
+      adminMode = false;
       setAdminStatus();
     }
 
