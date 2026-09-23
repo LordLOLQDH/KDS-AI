@@ -4,35 +4,45 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050505">
-<link rel="icon" href="IMG_3297.jpeg?v=3.0" type="image/jpeg">
-<link rel="apple-touch-icon" href="IMG_3297.jpeg?v=3.0">
+<link rel="icon" href="IMG_3297.jpeg?v=4.0" type="image/jpeg">
+<link rel="apple-touch-icon" href="IMG_3297.jpeg?v=4.0">
 <meta property="og:title" content="KDS AI">
 <meta property="og:description" content="Intelligenter KDS-Assistent">
 <meta property="og:type" content="website">
-<meta property="og:image" content="IMG_3297.jpeg?v=3.0">
+<meta property="og:image" content="IMG_3297.jpeg?v=4.0">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="KDS AI">
 <meta name="twitter:description" content="Intelligenter KDS-Assistent">
-<meta name="twitter:image" content="IMG_3297.jpeg?v=3.0">
+<meta name="twitter:image" content="IMG_3297.jpeg?v=4.0">
 <title>KDS AI</title>
-<link rel="stylesheet" href="style.css?v=3.0">
+<link rel="stylesheet" href="style.css?v=4.0">
 </head>
 <body>
 <div class="background-glow"></div>
 <main class="app">
   <header class="topbar">
     <div class="brand">
-      <img class="brand-logo" src="IMG_3297.jpeg?v=3.0" alt="KDS AI Logo">
+      <img class="brand-logo" src="IMG_3297.jpeg?v=4.0" alt="KDS AI Logo">
       <div>
         <h1>KDS AI</h1>
         <p>Intelligenter KDS-Assistent</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <div class="version" title="Aktuelle Version">v3.0</div>
+      <div class="version" title="Aktuelle Version">v4.0</div>
       <button id="updateApp" class="update-button" type="button" title="Neueste Version laden">Aktualisieren</button>
     </div>
   </header>
+  <section class="model-panel">
+    <label for="modelSelect">KI-Modell</label>
+    <select id="modelSelect" aria-label="KI-Modell auswählen">
+      <option value="default">Aktuelles KDS-Modell</option>
+      <option value="qwen/qwen-2.5-72b-instruct">Qwen2.5 72B Instruct (2024)</option>
+      <option value="qwen/qwen-2-72b-instruct">Qwen2 72B Instruct (2024)</option>
+      <option value="google/gemma-3-27b-it">Gemma 3 27B (2025)</option>
+      <option value="meta-llama/llama-3.3-8b-instruct">Llama 3.3 8B Instruct</option>
+    </select>
+  </section>
   <section class="hero">
     <div class="status-row"><span class="status-dot"></span><span id="modeStatus">Online</span></div>
     <h2>Wie kann ich dir helfen?</h2>
@@ -45,6 +55,6 @@
   </form>
   <footer><span>KDS AI</span><span>•</span><span>Version 3.0</span></footer>
 </main>
-<script src="app.js?v=3.0"></script>
+<script src="app.js?v=4.0"></script>
 </body>
 </html>
