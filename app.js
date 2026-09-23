@@ -7,7 +7,8 @@ const input = document.querySelector("#input");
 const updateApp = document.querySelector("#updateApp");
 
 let messageCount = 0;
-let adminToken = "";\nlet adminMode = false;
+let adminToken = "";
+let adminMode = false;
 
 function setAdminStatus() {
   const status = document.querySelector("#modeStatus");
