@@ -1,4 +1,4 @@
-const VERSION = "4.0";
+const VERSION = "4.1";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 
 const messages = document.querySelector("#messages");
@@ -96,7 +96,8 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify({
         message,
         isFirstMessage,
-        adminToken
+        adminToken,
+        model: selectedModel
       })
     });
 
