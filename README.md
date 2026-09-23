@@ -6,9 +6,11 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v1.7**
+**v1.8**
 
 ## Funktionen
+
+- KDS-Infos können automatisch die direkte WhatsApp-Kontaktmöglichkeit enthalten
 
 - Moderne GitHub-Pages-Oberfläche
 - Chat mit dem KDS AI-Assistenten
