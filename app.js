@@ -1,5 +1,5 @@
 const VERSION = "2.1";
-const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat";
+const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v2";
 
 const messages = document.querySelector("#messages");
 const form = document.querySelector("#chat");
