@@ -1,4 +1,4 @@
-const VERSION = "2.0";
+const VERSION = "2.1";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat";
 
 const messages = document.querySelector("#messages");
@@ -87,10 +87,16 @@ form.addEventListener("submit", async (e) => {
 
     const d = await r.json();
 
+    if (!r.ok) {
+      pending.textContent = d.error || `Serverfehler (${r.status}).`;
+      return;
+    }
+
     if (d.adminToken) {
       adminToken = d.adminToken;
       adminMode = true;
       setAdminStatus();
+      pending.textContent = d.reply || "Admin-Modus aktiviert.";
     }
 
     if (d.mode === "exit") {
@@ -99,7 +105,7 @@ form.addEventListener("submit", async (e) => {
       setAdminStatus();
     }
 
-    pending.textContent = d.reply || d.error || "Keine Antwort erhalten.";
+    if (!d.adminToken) pending.textContent = d.reply || d.error || "Keine Antwort erhalten.";
   } catch (err) {
     console.error(err);
     pending.textContent = "Verbindungsfehler.";
