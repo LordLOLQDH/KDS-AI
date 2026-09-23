@@ -84,6 +84,8 @@ form.addEventListener("submit", async (e) => {
 
   const normalizedMessage = message.toLowerCase().replace(/[!,.?]/g, "").trim();
   if (/^(hallo|hi|hey|guten morgen|guten tag|guten abend)$/.test(normalizedMessage)) {
+    messageCount++;
+    sessionStorage.setItem("kds_ai_message_count", String(messageCount));
     add("Hallo! Wie kann ich dir helfen?", "ai");
     input.focus();
     return;
@@ -94,7 +96,6 @@ form.addEventListener("submit", async (e) => {
   const pending = messages.lastElementChild;
   const isFirstMessage = messageCount === 0;
   messageCount++;
-  sessionStorage.setItem("kds_ai_message_count", String(messageCount));
   sessionStorage.setItem("kds_ai_message_count", String(messageCount));
 
   try {
