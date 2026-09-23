@@ -4,7 +4,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v1.3**
+**v1.4**
 
 ## Funktionen
 
@@ -43,7 +43,7 @@ Die Versionsnummer wird bei Änderungen am Projekt aktualisiert.
 
 Beispiel:
 
-`1.1 → 1.2 → 1.3 → ... → 1.9 → 2.0`
+`1.1 → 1.2 → 1.3 → 1.4 → ... → 1.9 → 2.0`
 
 Größere Funktionsänderungen können einen Sprung auf eine neue Hauptversion auslösen.
 
