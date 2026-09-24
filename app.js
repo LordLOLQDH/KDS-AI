@@ -1,5 +1,6 @@
 const VERSION = "5.1";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
+const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
 const BETA_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-beta";
 
