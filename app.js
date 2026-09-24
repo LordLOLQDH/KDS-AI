@@ -1,5 +1,6 @@
 const VERSION = "4.2";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
+const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 
 const messages = document.querySelector("#messages");
 const form = document.querySelector("#chat");
@@ -60,6 +61,18 @@ updateApp.addEventListener("click", (event) => {
   window.location.href = url.toString();
 });
 
+
+async function requestFallback(message) {
+  const r = await fetch(FALLBACK_ENDPOINT, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({message})
+  });
+  const d = await r.json();
+  if (!r.ok || !d.reply) throw new Error(d.error || `Fallback-Fehler (${r.status})`);
+  return d.reply;
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -115,7 +128,12 @@ form.addEventListener("submit", async (e) => {
     const d = await r.json();
 
     if (!r.ok) {
-      pending.textContent = d.error || `Serverfehler (${r.status}).`;
+      try {
+        pending.textContent = await requestFallback(message);
+      } catch (fallbackError) {
+        console.error(fallbackError);
+        pending.textContent = d.error || `Serverfehler (${r.status}).`;
+      }
       return;
     }
 
@@ -135,7 +153,12 @@ form.addEventListener("submit", async (e) => {
     if (!d.adminToken) pending.textContent = d.reply || d.error || "Keine Antwort erhalten.";
   } catch (err) {
     console.error(err);
-    pending.textContent = "Verbindungsfehler.";
+    try {
+      pending.textContent = await requestFallback(message);
+    } catch (fallbackError) {
+      console.error(fallbackError);
+      pending.textContent = "Verbindungsfehler.";
+    }
   }
 
   input.focus();
