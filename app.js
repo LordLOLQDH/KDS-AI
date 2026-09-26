@@ -48,9 +48,9 @@ form.addEventListener("submit",async e=>{
    if(/^beta\s*(status)?$/i.test(message)){
      const enabled=await getBetaStatus();pending.textContent=enabled?"Beta-Modus ist aktiviert.":"Beta-Modus ist deaktiviert.";input.focus();return;
    }
-   if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);input.focus();return}
+   if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});const sent=await notifyContact(message);if(sent)pending.textContent+="\n\nIhre Anfrage wurde an KDS weitergeleitet.";input.focus();return}
    let d;
-   try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);input.focus();return}
+   try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});const sent=await notifyContact(message);if(sent)pending.textContent+="\n\nIhre Anfrage wurde an KDS weitergeleitet.";input.focus();return}
    if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=d.reply||d.error||"Keine Antwort erhalten."; conversation.push({role:"assistant",content:pending.textContent}); const sent=await notifyContact(message); if(sent) pending.textContent += "\n\nIhre Anfrage wurde an KDS weitergeleitet."; }
  }catch(err){console.error(err);pending.textContent="Die Anfrage konnte gerade nicht verarbeitet werden."}
  input.focus();
