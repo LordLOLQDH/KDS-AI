@@ -1,4 +1,4 @@
-const VERSION = "5.6";
+const VERSION = "5.7";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
@@ -25,7 +25,7 @@ getBetaStatus();
 
 const modelSelect=document.querySelector("#modelSelect");
 if(modelSelect){if([...modelSelect.options].some(o=>o.value===selectedModel))modelSelect.value=selectedModel;else{selectedModel="default";modelSelect.value="default"}modelSelect.addEventListener("change",()=>{selectedModel=modelSelect.value;localStorage.setItem("kds_ai_model",selectedModel)})}
-function add(text,cls){const el=document.createElement("div");el.className="msg "+cls;el.textContent=text;messages.appendChild(el);el.scrollIntoView({behavior:"smooth",block:"nearest"})}
+function add(text,cls){const el=document.createElement("div");el.className="msg "+cls;el.textContent=text;messages.appendChild(el);el.scrollIntoView({behavior:"smooth",block:"nearest"})}function cleanFirstGreeting(text){if(typeof text!=="string")return text;return text.replace(/^\s*Hallo[!,.]?\s*Wie kann ich dir helfen\??\s*/i,"").replace(/^\s*Hallo[!,.]?\s*Wie kann ich helfen\??\s*/i,"").trim()}
 updateApp.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();if(updateApp.disabled)return;updateApp.disabled=true;updateApp.textContent="Aktualisiere …";adminToken="";adminMode=false;sessionStorage.removeItem("kds_ai_message_count");window.location.replace(location.origin+location.pathname+"?cache="+Date.now());});
 
 async function notifyContact(message){try{const r=await fetch("https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-contact-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,conversation:conversation.map(x=>x.role+": "+x.content).join("\n\n"),page:location.href,model:selectedModel})});if(!r.ok)return false;const d=await r.json();return d?.sent===true}catch(err){console.warn("Kontakt-Weiterleitung fehlgeschlagen.",err);return false}}
@@ -54,10 +54,10 @@ form.addEventListener("submit",async e=>{
      const enabled=await getBetaStatus();pending.textContent=enabled?"Beta-Modus ist aktiviert.":"Beta-Modus ist deaktiviert.";input.focus();return;
    }
    if(isContactRequest(message)){ const sent=await notifyContact(message); if(sent){pending.textContent="Ich habe deine Anfrage an KDS weitergeleitet. Adam von KDS erhält die Angaben und kann sich bei dir wegen des Angebots für das gewünschte Projekt melden."; } else {pending.textContent="Ich konnte die Anfrage gerade nicht an KDS weiterleiten. Bitte versuche es gleich noch einmal oder kontaktiere KDS direkt über WhatsApp unter +49 175 4081426 oder per E-Mail an kraus-digital@proton.me.";} conversation.push({role:"assistant",content:pending.textContent}); input.focus(); return; }
-  if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
+  if(selectedModel==="cloudflare"){pending.textContent=cleanFirstGreeting(await requestCloudflare(message,isFirstMessage));conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
    let d;
    try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
-   if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=d.reply||d.error||"Keine Antwort erhalten."; conversation.push({role:"assistant",content:pending.textContent}); }
+   if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=cleanFirstGreeting(d.reply||d.error||"Keine Antwort erhalten."); conversation.push({role:"assistant",content:pending.textContent}); }
  }catch(err){console.error(err);pending.textContent="Die Anfrage konnte gerade nicht verarbeitet werden."}
  input.focus();
 });
