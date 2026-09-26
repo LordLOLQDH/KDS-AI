@@ -1,4 +1,4 @@
-const VERSION = "5.3";
+const VERSION = "5.4";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
