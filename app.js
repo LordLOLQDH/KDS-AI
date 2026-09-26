@@ -1,9 +1,8 @@
-const VERSION = "5.4";
+const VERSION = "5.5";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
 const BETA_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-beta";
-const CONTACT_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-contact-email";
 
 const KDS_KNOWLEDGE = `
 KDS steht für Kraus Digital Solutions. KDS ist ein digitales Dienstleistungsprojekt mit Schwerpunkt auf modernen Websites, digitalen Lösungen und individuellen Funktionen. KDS entwickelt Websites für Kunden und bietet klassische, interaktive und Premium-Lösungen an.
@@ -32,9 +31,7 @@ updateApp.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();up
 function cloudflarePrompt(message,isFirstMessage=false){return `Du bist KDS, der persönliche KI-Agent von Kraus Digital Solutions. Nutze diese Wissensbasis als verbindliche Faktenbasis. Antworte direkt und natürlich. Erfinde keine KDS-Fakten. Wenn die Frage nicht über KDS ist, beantworte sie normal. Antworte in derselben Sprache wie der Nutzer. Bei Chinesisch vollständig Chinesisch, bei Englisch Englisch, bei Deutsch Deutsch. Stelle dich nur bei der ersten Nachricht kurz als persönlicher KDS-Agent vor. Stelle dich bei Folgefragen nicht erneut vor und frage nicht "Wie kann ich helfen?", wenn bereits eine konkrete Frage gestellt wurde. Sage niemals, dass du keine Informationen über KDS bereitstellen kannst, wenn die Antwort in der Wissensbasis steht.\n\nKDS-WISSENSBASIS:\n${KDS_KNOWLEDGE}\n\n${isFirstMessage?"Erste Nachricht: kurze Vorstellung erlaubt.":"Folgefrage: keine erneute Vorstellung."}\n\nNUTZERFRAGE:\n${message}`}
 async function requestCloudflare(message,isFirstMessage=false){const r=await fetch(CLOUDFLARE_WORKER_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({message:cloudflarePrompt(message,isFirstMessage)})});const d=await r.json();if(!r.ok||!d.reply)throw Error(d.error||`Cloudflare-Fehler (${r.status})`);return d.reply}
 async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,isFirstMessage,adminToken,model:selectedModel})});const d=await r.json();if(!r.ok)throw Error(d.error||`Serverfehler (${r.status})`);return d}
-async function notifyContact(message){try{const r=await fetch(CONTACT_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,conversation:conversation.map(x=>x.role+": "+x.content).join("\n\n"),page:location.href,model:selectedModel})});if(!r.ok)return false;const d=await r.json();return d?.sent===true}catch(err){console.warn("Kontakt-Weiterleitung fehlgeschlagen.",err);return false}}
-
-form.addEventListener("submit",async e=>{
+("submit",async e=>{
  e.preventDefault();e.stopPropagation();const message=input.value.trim();if(!message)return;input.value="";add(message,"user");
  const lower=message.toLowerCase().trim();
  if(lower==="/exit"){adminToken="";adminMode=false;setAdminStatus();add("Admin-Modus beendet.","ai");input.focus();return}
@@ -49,10 +46,10 @@ form.addEventListener("submit",async e=>{
    if(/^beta\s*(status)?$/i.test(message)){
      const enabled=await getBetaStatus();pending.textContent=enabled?"Beta-Modus ist aktiviert.":"Beta-Modus ist deaktiviert.";input.focus();return;
    }
-   if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});const sent=await notifyContact(message);if(sent)pending.textContent+="\n\nIhre Anfrage wurde an KDS weitergeleitet.";input.focus();return}
+   if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
    let d;
-   try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});const sent=await notifyContact(message);if(sent)pending.textContent+="\n\nIhre Anfrage wurde an KDS weitergeleitet.";input.focus();return}
-   if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=d.reply||d.error||"Keine Antwort erhalten."; conversation.push({role:"assistant",content:pending.textContent}); const sent=await notifyContact(message); if(sent) pending.textContent += "\n\nIhre Anfrage wurde an KDS weitergeleitet."; }
+   try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
+   if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=d.reply||d.error||"Keine Antwort erhalten."; conversation.push({role:"assistant",content:pending.textContent}); }
  }catch(err){console.error(err);pending.textContent="Die Anfrage konnte gerade nicht verarbeitet werden."}
  input.focus();
 });
