@@ -1,4 +1,4 @@
-const VERSION = "5.8";
+const VERSION = "5.9";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
@@ -32,7 +32,7 @@ async function notifyContact(message){try{const r=await fetch("https://eopvkwhcg
 function isContactRequest(message){
  const m=message.toLowerCase();
  const project=/(website|webseite|homepage|shop|onlineshop|online-shop|admin.?panel|login|newsletter|design|programmier|entwickl|funktion)/i.test(m);
- const explicit=/(angebot|anfrage|anfragen|kontakt|kontaktieren|erreichen|sende|schick|meldet euch|melde mich|erstellen lassen|machen lassen|beauftragen|bestellen|rückruf|rueckruf)/i.test(m);
+ const explicit=/(angebot|anfrage|anfragen|kontakt|kontaktieren|erreichen|sende|schick|meldet euch|melde mich|erstellen lassen|machen lassen|beauftragen|bestellen|rückruf|rueckruf|nachricht an kds|nachricht an kraus digital solutions|an kds senden|kds schreiben|kds kontaktieren)/i.test(m);
  return project && explicit;
 }
 let contactFlow=null;
