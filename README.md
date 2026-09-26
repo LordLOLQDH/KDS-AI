@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.5**
+**v5.6**
 
 ## Funktionen
 
@@ -123,3 +123,13 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Erkannte Anfragen werden über die serverseitige KDS-Kontaktfunktion an `adam_kraus@icloud.com` weitergeleitet.
 - Die KI antwortet nach erfolgreicher Weiterleitung nicht mehr fälschlich, dass sie keine Nachrichten versenden könne.
 - Gesprächskontext, Seite und ausgewähltes Modell werden für die Kontaktanfrage mitgegeben.
+
+
+## Version 5.6
+
+- Angebotsanfragen werden nicht mehr automatisch versendet.
+- Die KI fragt zuerst die allgemeinen Kontaktdaten ab: Name, Projekt und Kontaktmöglichkeit.
+- Vor dem Versand wird eine Zusammenfassung der erfassten Angaben angezeigt.
+- Der Nutzer muss den Button „An KDS senden“ ausdrücklich bestätigen.
+- Nach erfolgreichem Versand wird der Button als „An KDS gesendet“ markiert.
+- Die erste KI-Nachricht stellt sich weiterhin als persönlicher KDS-Agent vor.
