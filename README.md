@@ -6,7 +6,9 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.5**
+**v5.5** (aktuell)
+
+**v5.0 Stable** ist zusätzlich als eingefrorene stabile Version unter `versions/v5.0-stable/` verfügbar.
 
 ## Funktionen
 
@@ -123,3 +125,18 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Erkannte Anfragen werden über die serverseitige KDS-Kontaktfunktion an `adam_kraus@icloud.com` weitergeleitet.
 - Die KI antwortet nach erfolgreicher Weiterleitung nicht mehr fälschlich, dass sie keine Nachrichten versenden könne.
 - Gesprächskontext, Seite und ausgewähltes Modell werden für die Kontaktanfrage mitgegeben.
+
+## Version 5.0 Stable
+
+- Eigener, eingefrorener Stable-Stand für einen zuverlässigen Rückfall.
+- Eigene Kopien von Oberfläche, Chat-Logik und Styles.
+- Keine Abhängigkeit von späteren Änderungen an der aktuellen Hauptversion.
+- Über die Website-Versionsauswahl direkt erreichbar.
+
+## Stabilitätskorrekturen im aktuellen Stand
+
+- Formular-Submit verwendet wieder einen echten submit-Event-Listener; dadurch wird beim Senden keine normale Browser-Formularnavigation ausgelöst.
+- Der Button „Aktualisieren“ erzwingt einen neuen Dokumentaufruf mit einem eindeutigen Cache-Parameter.
+- Die Versionsauswahl enthält 5.0 Stable zusätzlich zur aktuellen Version und den vorhandenen Archiven.
+- Die Stable-Version verwendet eigene Versionsdateien und eigene Cache-Busting-Werte.
+- Keine Secrets oder API-Schlüssel wurden in das Frontend aufgenommen.
