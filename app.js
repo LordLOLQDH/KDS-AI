@@ -1,4 +1,4 @@
-const VERSION = "5.5";
+const VERSION = "5.6";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
@@ -35,6 +35,44 @@ function isContactRequest(message){
  const explicit=/(angebot|anfrage|anfragen|kontakt|kontaktieren|erreichen|sende|schick|meldet euch|melde mich|erstellen lassen|machen lassen|beauftragen|bestellen|rückruf|rueckruf)/i.test(m);
  return project && explicit;
 }
+let contactFlow=null;
+function extractContactData(text){
+ const data={};
+ const name=text.match(/(?:ich hei(?:ß|ss)e|mein(?:e)?\s+name\s+ist|name\s*[:=])\s+([A-Za-zÄÖÜäöüß' -]{2,60})/i);
+ if(name)data.name=name[1].trim().replace(/[.,;:]+$/,"");
+ const email=text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+ if(email)data.contact=email[0];
+ const phone=text.match(/(?:\+49|0\d)[\d\s()/-]{7,18}\d/);
+ if(!data.contact&&phone)data.contact=phone[0].trim();
+ const domain=text.match(/\b(?:https?:\/\/)?(?:www\.)?[a-z0-9-]+\.(?:de|com|net|org|io|eu)\b/i);
+ if(domain)data.project=domain[0];
+ const project=text.match(/(?:website|webseite|homepage)(?:\s+(?:soll|heißt|heisst|ist|werden))?\s*(?:namens?|mit dem namen)?\s*[:=]?\s*([A-Za-z0-9ÄÖÜäöüß ._-]{2,80})/i);
+ if(!data.project&&project)data.project=project[1].trim().replace(/[.,;:]+$/,"");
+ return data;
+}
+function missingContactFields(){
+ return ["name","project","contact"].filter(k=>!contactFlow?.[k]);
+}
+function contactSummary(){
+ return "Ich habe folgende Angaben für deine Anfrage erfasst:\nName: "+contactFlow.name+"\nProjekt: "+contactFlow.project+"\nKontakt: "+contactFlow.contact+"\n\nSoll ich diese Anfrage jetzt an KDS senden?";
+}
+function addSendButton(messageEl){
+ const wrap=document.createElement("div");wrap.className="contact-action";
+ const btn=document.createElement("button");btn.type="button";btn.className="contact-send";btn.textContent="An KDS senden";
+ btn.addEventListener("click",async()=>{
+   btn.disabled=true;btn.textContent="Wird gesendet …";
+   const request="Website-Angebotsanfrage\nName: "+contactFlow.name+"\nProjekt: "+contactFlow.project+"\nKontakt: "+contactFlow.contact;
+   const sent=await notifyContact(request);
+   if(sent){btn.textContent="An KDS gesendet";btn.classList.add("sent");contactFlow=null;}
+   else{btn.disabled=false;btn.textContent="An KDS senden";}
+ });
+ wrap.appendChild(btn);messageEl.parentNode.insertBefore(wrap,messageEl.nextSibling);
+}
+function showContactMessage(text,withButton=false){
+ add(text,"ai");
+ const el=messages.lastElementChild;
+ if(withButton)addSendButton(el);
+}
 function cloudflarePrompt(message,isFirstMessage=false){return `Du bist KDS, der persönliche KI-Agent von Kraus Digital Solutions. Nutze diese Wissensbasis als verbindliche Faktenbasis. Antworte direkt und natürlich. Erfinde keine KDS-Fakten. Wenn die Frage nicht über KDS ist, beantworte sie normal. Antworte in derselben Sprache wie der Nutzer. Bei Chinesisch vollständig Chinesisch, bei Englisch Englisch, bei Deutsch Deutsch. Stelle dich nur bei der ersten Nachricht kurz als persönlicher KDS-Agent vor. Stelle dich bei Folgefragen nicht erneut vor und frage nicht "Wie kann ich helfen?", wenn bereits eine konkrete Frage gestellt wurde. Sage niemals, dass du keine Informationen über KDS bereitstellen kannst, wenn die Antwort in der Wissensbasis steht.\n\nKDS-WISSENSBASIS:\n${KDS_KNOWLEDGE}\n\n${isFirstMessage?"Erste Nachricht: kurze Vorstellung erlaubt.":"Folgefrage: keine erneute Vorstellung."}\n\nNUTZERFRAGE:\n${message}`}
 async function requestCloudflare(message,isFirstMessage=false){const r=await fetch(CLOUDFLARE_WORKER_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({message:cloudflarePrompt(message,isFirstMessage)})});const d=await r.json();if(!r.ok||!d.reply)throw Error(d.error||`Cloudflare-Fehler (${r.status})`);return d.reply}
 async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,isFirstMessage,adminToken,model:selectedModel,conversation:conversation.map(x=>x.role+": "+x.content).join("\n\n"),page:location.href})});const d=await r.json();if(!r.ok)throw Error(d.error||`Serverfehler (${r.status})`);return d}
@@ -53,7 +91,22 @@ async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,
    if(/^beta\s*(status)?$/i.test(message)){
      const enabled=await getBetaStatus();pending.textContent=enabled?"Beta-Modus ist aktiviert.":"Beta-Modus ist deaktiviert.";input.focus();return;
    }
-   if(isContactRequest(message)){ const sent=await notifyContact(message); if(sent){pending.textContent="Ich habe deine Anfrage an KDS weitergeleitet. Adam von KDS erhält die Angaben und kann sich bei dir wegen des Angebots für das gewünschte Projekt melden."; } else {pending.textContent="Ich konnte die Anfrage gerade nicht an KDS weiterleiten. Bitte versuche es gleich noch einmal oder kontaktiere KDS direkt über WhatsApp unter +49 175 4081426 oder per E-Mail an kraus-digital@proton.me.";} conversation.push({role:"assistant",content:pending.textContent}); input.focus(); return; }
+   if(isContactRequest(message)||contactFlow){
+    const extracted=extractContactData(message);
+    if(!contactFlow)contactFlow={};
+    Object.assign(contactFlow,extracted);
+    const missing=missingContactFields();
+    if(missing.length){
+      const labels={name:"deinen Namen",project:"den Namen bzw. die Domain des Projekts",contact:"eine Kontaktmöglichkeit (E-Mail oder Telefonnummer)"};
+      const ask=missing.length===3?"Gerne. Bevor ich die Anfrage an KDS sende, brauche ich noch deinen Namen, den Namen bzw. die Domain des Projekts und eine Kontaktmöglichkeit (E-Mail oder Telefonnummer).":
+        "Gerne. Mir fehlt noch "+missing.map(k=>labels[k]).join(" und ")+".";
+      pending.textContent=(isFirstMessage?"Hallo! Ich bin dein persönlicher Assistent von KDS.\n\n":"")+ask;
+      conversation.push({role:"assistant",content:pending.textContent});input.focus();return;
+    }
+    pending.textContent=(isFirstMessage?"Hallo! Ich bin dein persönlicher Assistent von KDS.\n\n":"")+contactSummary();
+    conversation.push({role:"assistant",content:pending.textContent});
+    addSendButton(pending);input.focus();return;
+  }
   if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
    let d;
    try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
