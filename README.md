@@ -12,7 +12,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.7**
+**v5.9**
 
 ## Funktionen
 
@@ -146,3 +146,12 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Der Bestätigungsbutton „An KDS senden“ verhindert jetzt explizit Standard-Formularaktionen und Event-Weiterleitung.
 - Beim Klick wird die Seite nicht mehr durch den Chat-Submit-Mechanismus aktualisiert.
 - Der Versand läuft ausschließlich über den bestehenden serverseitigen Kontakt-Endpunkt.
+
+
+## Version 5.9
+
+- Direkte Nachrichtenanfragen wie „Sende eine Nachricht an KDS“, „An KDS senden“ oder „KDS kontaktieren“ werden jetzt bereits im Frontend als Kontaktanfrage erkannt.
+- Dadurch antwortet die KI bei diesen Formulierungen nicht mehr fälschlich, dass sie keine externen Nachrichten senden könne.
+- Stattdessen startet der bestehende Kontakt-Workflow und fragt fehlende Angaben wie Name, Projekt und Kontaktmöglichkeit ab.
+- Der Versand bleibt ausdrücklich bestätigungspflichtig über „An KDS senden“.
+- Versionsanzeige und Cache-Busting auf 5.9 aktualisiert.
