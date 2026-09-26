@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.3**
+**v5.4**
 
 ## Funktionen
 
@@ -107,7 +107,7 @@ In Supabase müssen für die Edge Function `kds-contact-email` diese Secrets hin
 
 Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder der Website hinterlegt werden.
 
-## Version 5.3
+## Version 5.4
 
 - Backup von v5.2 unter `versions/v5.2/`
 - Automatische Erkennung konkreter Kunden-/Projektanfragen
