@@ -1,5 +1,11 @@
 # KDS AI
 
+## Version 5.8
+- Chat-Formular wieder korrekt mit dem `submit`-Handler verbunden.
+- Verhindert den nativen Browser-Submit, der die Seite beim Absenden neu geladen und dadurch eine alte 5.6-Version anzeigen konnte.
+- Cache-Busting auf 5.8 aktualisiert.
+
+
 Ein KI-gestützter Assistent für KDS.
 
 ![KDS AI Logo](IMG_3297.jpeg)
