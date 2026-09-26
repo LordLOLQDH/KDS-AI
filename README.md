@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.4**
+**v5.5**
 
 ## Funktionen
 
@@ -115,3 +115,11 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - iCloud SMTP statt kostenpflichtigem Mail-API-Anbieter
 - Keine SMTP-Zugangsdaten im Frontend
 - Kontaktversand funktioniert über Hauptmodell, Cloudflare-Ausweichpfad und Cloudflare-Modellauswahl
+
+
+## Version 5.5
+
+- Angebots- und Projektanfragen werden im Chat ausdrücklich als Kontaktanfragen erkannt.
+- Erkannte Anfragen werden über die serverseitige KDS-Kontaktfunktion an `adam_kraus@icloud.com` weitergeleitet.
+- Die KI antwortet nach erfolgreicher Weiterleitung nicht mehr fälschlich, dass sie keine Nachrichten versenden könne.
+- Gesprächskontext, Seite und ausgewähltes Modell werden für die Kontaktanfrage mitgegeben.
