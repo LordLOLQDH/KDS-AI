@@ -1,4 +1,4 @@
-const VERSION = "5.6";
+const VERSION = "5.7";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
@@ -59,7 +59,7 @@ function contactSummary(){
 function addSendButton(messageEl){
  const wrap=document.createElement("div");wrap.className="contact-action";
  const btn=document.createElement("button");btn.type="button";btn.className="contact-send";btn.textContent="An KDS senden";
- btn.addEventListener("click",async()=>{
+ btn.addEventListener("click",async e=>{ e.preventDefault(); e.stopPropagation();
    btn.disabled=true;btn.textContent="Wird gesendet …";
    const request="Website-Angebotsanfrage\nName: "+contactFlow.name+"\nProjekt: "+contactFlow.project+"\nKontakt: "+contactFlow.contact;
    const sent=await notifyContact(request);
