@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.6** (aktuell)
+**v5.7** (aktuell)
 
 **v5.0 Stable** ist zusätzlich als eingefrorene stabile Version unter `versions/v5.0-stable/` verfügbar.
 
@@ -119,7 +119,7 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Kontaktversand funktioniert über Hauptmodell, Cloudflare-Ausweichpfad und Cloudflare-Modellauswahl
 
 
-## Version 5.6
+## Version 5.7
 
 - Angebots- und Projektanfragen werden im Chat ausdrücklich als Kontaktanfragen erkannt.
 - Erkannte Anfragen werden über die serverseitige KDS-Kontaktfunktion an `adam_kraus@icloud.com` weitergeleitet.
@@ -140,3 +140,4 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Die Versionsauswahl enthält 5.0 Stable zusätzlich zur aktuellen Version und den vorhandenen Archiven.
 - Die Stable-Version verwendet eigene Versionsdateien und eigene Cache-Busting-Werte.
 - Keine Secrets oder API-Schlüssel wurden in das Frontend aufgenommen.
+- Doppelte automatische Begrüßungen im ersten Chat-Beitrag werden im Frontend entfernt, damit die KDS-Willkommensnachricht nur einmal erscheint.
