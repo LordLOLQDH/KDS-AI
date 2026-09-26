@@ -33,7 +33,7 @@ function isContactRequest(message){
  const m=message.toLowerCase();
  const project=/(website|webseite|homepage|shop|onlineshop|online-shop|admin.?panel|login|newsletter|design|programmier|entwickl|funktion)/i.test(m);
  const explicit=/(angebot|anfrage|anfragen|kontakt|kontaktieren|erreichen|sende|schick|meldet euch|melde mich|erstellen lassen|machen lassen|beauftragen|bestellen|rückruf|rueckruf|nachricht an kds|nachricht an kraus digital solutions|an kds senden|kds schreiben|kds kontaktieren)/i.test(m);
- return project && explicit;
+ const directMessage=/(nachricht an kds|nachricht an kraus digital solutions|an kds senden|kds schreiben|kds kontaktieren|sende eine nachricht|schick eine nachricht)/i.test(m);\n return directMessage || (project && explicit);
 }
 let contactFlow=null;
 function extractContactData(text){
