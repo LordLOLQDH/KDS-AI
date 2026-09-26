@@ -1,4 +1,4 @@
-const VERSION = "5.7";
+const VERSION = "5.8";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
@@ -76,7 +76,7 @@ function showContactMessage(text,withButton=false){
 function cloudflarePrompt(message,isFirstMessage=false){return `Du bist KDS, der persönliche KI-Agent von Kraus Digital Solutions. Nutze diese Wissensbasis als verbindliche Faktenbasis. Antworte direkt und natürlich. Erfinde keine KDS-Fakten. Wenn die Frage nicht über KDS ist, beantworte sie normal. Antworte in derselben Sprache wie der Nutzer. Bei Chinesisch vollständig Chinesisch, bei Englisch Englisch, bei Deutsch Deutsch. Stelle dich nur bei der ersten Nachricht kurz als persönlicher KDS-Agent vor. Stelle dich bei Folgefragen nicht erneut vor und frage nicht "Wie kann ich helfen?", wenn bereits eine konkrete Frage gestellt wurde. Sage niemals, dass du keine Informationen über KDS bereitstellen kannst, wenn die Antwort in der Wissensbasis steht.\n\nKDS-WISSENSBASIS:\n${KDS_KNOWLEDGE}\n\n${isFirstMessage?"Erste Nachricht: kurze Vorstellung erlaubt.":"Folgefrage: keine erneute Vorstellung."}\n\nNUTZERFRAGE:\n${message}`}
 async function requestCloudflare(message,isFirstMessage=false){const r=await fetch(CLOUDFLARE_WORKER_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({message:cloudflarePrompt(message,isFirstMessage)})});const d=await r.json();if(!r.ok||!d.reply)throw Error(d.error||`Cloudflare-Fehler (${r.status})`);return d.reply}
 async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,isFirstMessage,adminToken,model:selectedModel,conversation:conversation.map(x=>x.role+": "+x.content).join("\n\n"),page:location.href})});const d=await r.json();if(!r.ok)throw Error(d.error||`Serverfehler (${r.status})`);return d}
-("submit",async e=>{
+form.addEventListener("submit",async e=>{
  e.preventDefault();e.stopPropagation();const message=input.value.trim();if(!message)return;input.value="";add(message,"user");
  const lower=message.toLowerCase().trim();
  if(lower==="/exit"){adminToken="";adminMode=false;setAdminStatus();add("Admin-Modus beendet.","ai");input.focus();return}
