@@ -1,8 +1,9 @@
-const VERSION = "5.1";
+const VERSION = "5.3";
 const ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/ai-chat-v3";
 const FALLBACK_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/cloudflare-ai-fallback";
 const CLOUDFLARE_WORKER_ENDPOINT = "https://kds-ai-cloudflare.adam-kraus.workers.dev";
 const BETA_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-beta";
+const CONTACT_ENDPOINT = "https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-contact-email";
 
 const KDS_KNOWLEDGE = `
 KDS steht für Kraus Digital Solutions. KDS ist ein digitales Dienstleistungsprojekt mit Schwerpunkt auf modernen Websites, digitalen Lösungen und individuellen Funktionen. KDS entwickelt Websites für Kunden und bietet klassische, interaktive und Premium-Lösungen an.
@@ -13,6 +14,7 @@ Preise: Standard-Website 160 € normal / 90 € Testkunde. Grundgerüst 40/30 �
 
 const messages=document.querySelector("#messages"),form=document.querySelector("#chat"),input=document.querySelector("#input"),updateApp=document.querySelector("#updateApp"),betaBadge=document.querySelector("#betaBadge");
 let messageCount=Number(sessionStorage.getItem("kds_ai_message_count")||"0"),adminToken="",adminMode=false,selectedModel=localStorage.getItem("kds_ai_model")||"default";
+const conversation=[];
 
 function setAdminStatus(){const s=document.querySelector("#modeStatus");if(s)s.textContent=adminMode?"Admin-Modus":"Online"}
 function setBetaBadge(enabled){if(betaBadge)betaBadge.hidden=!enabled}
@@ -49,7 +51,7 @@ form.addEventListener("submit",async e=>{
    if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);input.focus();return}
    let d;
    try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);input.focus();return}
-   if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else pending.textContent=d.reply||d.error||"Keine Antwort erhalten.";
+   if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=d.reply||d.error||"Keine Antwort erhalten."; conversation.push({role:"assistant",content:pending.textContent}); const sent=await notifyContact(message); if(sent) pending.textContent += "\n\nIhre Anfrage wurde an KDS weitergeleitet."; }
  }catch(err){console.error(err);pending.textContent="Die Anfrage konnte gerade nicht verarbeitet werden."}
  input.focus();
 });
