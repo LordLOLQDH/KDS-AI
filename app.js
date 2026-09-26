@@ -28,9 +28,15 @@ if(modelSelect){if([...modelSelect.options].some(o=>o.value===selectedModel))mod
 function add(text,cls){const el=document.createElement("div");el.className="msg "+cls;el.textContent=text;messages.appendChild(el);el.scrollIntoView({behavior:"smooth",block:"nearest"})}
 updateApp.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();updateApp.disabled=true;updateApp.textContent="Aktualisiere …";adminToken="";adminMode=false;const u=new URL(location.href);u.search="";u.searchParams.set("update",Date.now());location.href=u.toString()});
 
+function isContactRequest(message){
+ const m=message.toLowerCase();
+ const project=/(website|webseite|homepage|shop|onlineshop|online-shop|admin.?panel|login|newsletter|design|programmier|entwickl|funktion)/i.test(m);
+ const intent=/(angebot|anfrage|anfragen|kontakt|kontaktieren|erreichen|sende|schick|melden|möchte|moechte|will|brauche|benötige|benoetige|erstellen lassen|machen lassen|beauftragen|bestellen)/i.test(m);
+ return project && intent;
+}
 function cloudflarePrompt(message,isFirstMessage=false){return `Du bist KDS, der persönliche KI-Agent von Kraus Digital Solutions. Nutze diese Wissensbasis als verbindliche Faktenbasis. Antworte direkt und natürlich. Erfinde keine KDS-Fakten. Wenn die Frage nicht über KDS ist, beantworte sie normal. Antworte in derselben Sprache wie der Nutzer. Bei Chinesisch vollständig Chinesisch, bei Englisch Englisch, bei Deutsch Deutsch. Stelle dich nur bei der ersten Nachricht kurz als persönlicher KDS-Agent vor. Stelle dich bei Folgefragen nicht erneut vor und frage nicht "Wie kann ich helfen?", wenn bereits eine konkrete Frage gestellt wurde. Sage niemals, dass du keine Informationen über KDS bereitstellen kannst, wenn die Antwort in der Wissensbasis steht.\n\nKDS-WISSENSBASIS:\n${KDS_KNOWLEDGE}\n\n${isFirstMessage?"Erste Nachricht: kurze Vorstellung erlaubt.":"Folgefrage: keine erneute Vorstellung."}\n\nNUTZERFRAGE:\n${message}`}
 async function requestCloudflare(message,isFirstMessage=false){const r=await fetch(CLOUDFLARE_WORKER_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({message:cloudflarePrompt(message,isFirstMessage)})});const d=await r.json();if(!r.ok||!d.reply)throw Error(d.error||`Cloudflare-Fehler (${r.status})`);return d.reply}
-async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,isFirstMessage,adminToken,model:selectedModel})});const d=await r.json();if(!r.ok)throw Error(d.error||`Serverfehler (${r.status})`);return d}
+async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,isFirstMessage,adminToken,model:selectedModel,conversation:conversation.map(x=>x.role+": "+x.content).join("\n\n"),page:location.href})});const d=await r.json();if(!r.ok)throw Error(d.error||`Serverfehler (${r.status})`);return d}
 ("submit",async e=>{
  e.preventDefault();e.stopPropagation();const message=input.value.trim();if(!message)return;input.value="";add(message,"user");
  const lower=message.toLowerCase().trim();
@@ -46,7 +52,8 @@ async function requestMain(message,isFirstMessage){const r=await fetch(ENDPOINT,
    if(/^beta\s*(status)?$/i.test(message)){
      const enabled=await getBetaStatus();pending.textContent=enabled?"Beta-Modus ist aktiviert.":"Beta-Modus ist deaktiviert.";input.focus();return;
    }
-   if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
+   if(isContactRequest(message)){ const sent=await notifyContact(message); if(sent){pending.textContent="Ich habe deine Anfrage an KDS weitergeleitet. Adam von KDS erhält die Angaben und kann sich bei dir wegen des Angebots für das gewünschte Projekt melden."; } else {pending.textContent="Ich konnte die Anfrage gerade nicht an KDS weiterleiten. Bitte versuche es gleich noch einmal oder kontaktiere KDS direkt über WhatsApp unter +49 175 4081426 oder per E-Mail an kraus-digital@proton.me.";} conversation.push({role:"assistant",content:pending.textContent}); input.focus(); return; }
+  if(selectedModel==="cloudflare"){pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
    let d;
    try{d=await requestMain(message,isFirstMessage)}catch(mainErr){console.warn("Primäres Modell fehlgeschlagen, Cloudflare-Fallback wird verwendet.",mainErr);pending.textContent="Wechsle zu Cloudflare AI …";pending.textContent=await requestCloudflare(message,isFirstMessage);conversation.push({role:"assistant",content:pending.textContent});input.focus();return}
    if(d.adminToken){adminToken=d.adminToken;adminMode=true;setAdminStatus();pending.textContent=d.reply||"Admin-Modus aktiviert."}else { pending.textContent=d.reply||d.error||"Keine Antwort erhalten."; conversation.push({role:"assistant",content:pending.textContent}); }
