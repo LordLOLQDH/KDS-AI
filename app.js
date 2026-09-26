@@ -28,6 +28,7 @@ if(modelSelect){if([...modelSelect.options].some(o=>o.value===selectedModel))mod
 function add(text,cls){const el=document.createElement("div");el.className="msg "+cls;el.textContent=text;messages.appendChild(el);el.scrollIntoView({behavior:"smooth",block:"nearest"})}
 updateApp.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();updateApp.disabled=true;updateApp.textContent="Aktualisiere …";adminToken="";adminMode=false;const u=new URL(location.href);u.search="";u.searchParams.set("update",Date.now());location.href=u.toString()});
 
+async function notifyContact(message){try{const r=await fetch("https://eopvkwhcgznvubesaszv.supabase.co/functions/v1/kds-contact-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,conversation:conversation.map(x=>x.role+": "+x.content).join("\n\n"),page:location.href,model:selectedModel})});if(!r.ok)return false;const d=await r.json();return d?.sent===true}catch(err){console.warn("Kontakt-Weiterleitung fehlgeschlagen.",err);return false}}
 function isContactRequest(message){
  const m=message.toLowerCase();
  const project=/(website|webseite|homepage|shop|onlineshop|online-shop|admin.?panel|login|newsletter|design|programmier|entwickl|funktion)/i.test(m);
