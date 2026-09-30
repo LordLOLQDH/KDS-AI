@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.7** (aktuell)
+**v5.8** (aktuell)
 
 **v5.0 Stable** ist zusätzlich als eingefrorene stabile Version unter `versions/v5.0-stable/` verfügbar.
 
@@ -101,7 +101,7 @@ Damit gibt es für diesen Versandweg keine zusätzliche E-Mail-Dienstgebühr. Di
 
 ## Einrichtung der Kontakt-Mail
 
-In Supabase müssen für die Edge Function `kds-contact-email` diese Secrets hinterlegt werden:
+In Supabase müssen für die Edge Function `kds-contact-email-v2` diese Secrets hinterlegt werden:
 
 `KDS_SMTP_USER` = vollständige iCloud-Mailadresse
 
@@ -141,3 +141,12 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Die Stable-Version verwendet eigene Versionsdateien und eigene Cache-Busting-Werte.
 - Keine Secrets oder API-Schlüssel wurden in das Frontend aufgenommen.
 - Doppelte automatische Begrüßungen im ersten Chat-Beitrag werden im Frontend entfernt, damit die KDS-Willkommensnachricht nur einmal erscheint.
+
+## Version 5.8
+
+- Neue serverseitige Kontakt-Mailfunktion kds-contact-email-v2.
+- KDS AI verwendet diese Funktion für erkannte Kunden- und Projektanfragen.
+- SMTP-Konfiguration unterstützt KDS_SMTP_USER / KDS_SMTP_PASSWORD sowie die Legacy-Namen SMTP_USER / SMTP_PASSWORD.
+- Die Mailfunktion prüft die SMTP-Verbindung vor dem Versand und liefert bei fehlender Konfiguration einen eindeutigen Fehler.
+- Einfacher Missbrauchsschutz und eingeschränkte CORS-Herkunft für den öffentlichen Kontakt-Endpunkt.
+- Sichtbare KDS-Bezeichnung auf KDS – Kraus Development Systems aktualisiert.
