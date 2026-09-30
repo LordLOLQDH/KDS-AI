@@ -6,7 +6,7 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.8** (aktuell)
+**v5.9** (aktuell)
 
 **v5.0 Stable** ist zusätzlich als eingefrorene stabile Version unter `versions/v5.0-stable/` verfügbar.
 
@@ -142,7 +142,7 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Keine Secrets oder API-Schlüssel wurden in das Frontend aufgenommen.
 - Doppelte automatische Begrüßungen im ersten Chat-Beitrag werden im Frontend entfernt, damit die KDS-Willkommensnachricht nur einmal erscheint.
 
-## Version 5.8
+## Version 5.9
 
 - Neue serverseitige Kontakt-Mailfunktion kds-contact-email-v2.
 - KDS AI verwendet diese Funktion für erkannte Kunden- und Projektanfragen.
@@ -150,3 +150,13 @@ Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder 
 - Die Mailfunktion prüft die SMTP-Verbindung vor dem Versand und liefert bei fehlender Konfiguration einen eindeutigen Fehler.
 - Einfacher Missbrauchsschutz und eingeschränkte CORS-Herkunft für den öffentlichen Kontakt-Endpunkt.
 - Sichtbare KDS-Bezeichnung auf KDS – Kraus Development Systems aktualisiert.
+
+
+## Version 5.9
+
+- Neues direkt integriertes Kontaktformular im KDS-AI-Frontend.
+- Kunden können Name, E-Mail, Projekt und Nachricht an KDS übermitteln.
+- Die Kontaktfunktion sendet die Angaben serverseitig über iCloud SMTP an `adam_kraus@icloud.com`.
+- Die Mail enthält zusätzlich Zeitpunkt, Seite, KI-Modell, Auslöser und Gesprächskontext.
+- SMTP-Verbindung nutzt Port 587 mit STARTTLS und versucht bei Verbindungsproblemen zusätzlich Port 465 mit TLS.
+- SMTP-Zugangsdaten bleiben ausschließlich in Supabase Secrets.
