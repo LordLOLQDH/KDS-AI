@@ -22,8 +22,8 @@ Deno.serve(async(req)=>{
   const ip=req.headers.get("cf-connecting-ip")||req.headers.get("x-forwarded-for")||"unknown";const now=Date.now();
   if(now-(recent.get(ip)||0)<5000)return json({ok:false,sent:false,error:"Bitte kurz warten und erneut versuchen."},429);
   if(!looksLikeInquiry(message))return json({ok:true,sent:false,inquiry:false});recent.set(ip,now);
-  const apiKey=Deno.env.get("BREVO_API_KEY")||"";
-  if(!apiKey)return json({ok:false,sent:false,configured:false,error:"BREVO_API_KEY ist noch nicht in den Supabase Secrets hinterlegt."},503);
+  const apiKey=Deno.env.get("KDS-AI-Email")||"";
+  if(!apiKey)return json({ok:false,sent:false,configured:false,error:"KDS-AI-Email ist noch nicht in den Supabase Secrets hinterlegt."},503);
 
   const name=clean(body?.name,120),suppliedEmail=clean(body?.email,320),email=emailFrom(suppliedEmail)||emailFrom(message);
   const project=clean(body?.project,500),page=clean(body?.page,500)||"KDS AI",model=clean(body?.model,200)||"Nicht angegeben",conversation=clean(body?.conversation);
