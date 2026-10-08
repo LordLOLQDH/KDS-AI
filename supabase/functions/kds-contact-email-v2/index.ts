@@ -6,7 +6,7 @@ const SENDER="kraus-digital@proton.me";
 const recent=new Map<string,number>();
 
 const clean=(v:unknown,max=12000)=>typeof v==="string"?v.replace(/[\u0000-\u001F\u007F]/g," ").trim().slice(0,max):"";
-const cors=()=>({"Access-Control-Allow-Origin":ALLOWED_ORIGIN,"Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS","Vary":"Origin"});
+const cors=()=>({"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Max-Age":"86400"});
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors(),"Content-Type":"application/json"}});
 const emailFrom=(v:string)=>{const m=v.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);return m?m[0].toLowerCase():""};
 const looksLikeInquiry=(s:string)=>{const m=s.toLowerCase();const intent=/(möchte|moechte|will|brauche|benötige|benoetige|interessiere mich|hätte gerne|haette gerne|beauftragen|bestellen|umsetzen|erstellen lassen|machen lassen|preis|kosten|kostet)/i.test(m);const contact=/(kontakt|kontaktieren|erreichen|melde mich|meldet euch|rückruf|rueckruf|anfrage|anfragen|angebot|termin|beratung)/i.test(m);const project=/(website|webseite|homepage|shop|onlineshop|online-shop|admin.?panel|login|newsletter|design|programmier|entwickl|funktion)/i.test(m);return(contact&&(intent||project))||(project&&intent)};
@@ -22,8 +22,8 @@ Deno.serve(async(req)=>{
   const ip=req.headers.get("cf-connecting-ip")||req.headers.get("x-forwarded-for")||"unknown";const now=Date.now();
   if(now-(recent.get(ip)||0)<5000)return json({ok:false,sent:false,error:"Bitte kurz warten und erneut versuchen."},429);
   if(!looksLikeInquiry(message))return json({ok:true,sent:false,inquiry:false});recent.set(ip,now);
-  const apiKey=Deno.env.get("KDS-AI-Email")||"";
-  if(!apiKey)return json({ok:false,sent:false,configured:false,error:"KDS-AI-Email ist noch nicht in den Supabase Secrets hinterlegt."},503);
+  const env=Deno.env.toObject(); const secretKey=Object.keys(env).find(k=>k.toLowerCase().replace(/[^a-z0-9]/g,"")==="kdsaieemail")||"KDS-AI-Email"; const apiKey=env[secretKey]||"";
+  if(!apiKey)return json({ok:false,sent:false,configured:false,error:"Der Brevo-API-Key ist in Supabase nicht verfügbar."},503);
 
   const name=clean(body?.name,120),suppliedEmail=clean(body?.email,320),email=emailFrom(suppliedEmail)||emailFrom(message);
   const project=clean(body?.project,500),page=clean(body?.page,500)||"KDS AI",model=clean(body?.model,200)||"Nicht angegeben",conversation=clean(body?.conversation);
