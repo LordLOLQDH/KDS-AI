@@ -85,78 +85,25 @@ KDS AI befindet sich aktuell im Aufbau und wird schrittweise erweitert.
 
 ## Automatische Kontaktanfragen
 
-KDS AI kann bei einer konkreten Kundenanfrage automatisch eine ausführliche Benachrichtigung an `adam_kraus@icloud.com` senden. Das gilt nur für erkannte echte Kontakt- oder Projektanfragen, nicht für normale Wissensfragen oder reine Preisfragen.
+KDS AI kann bei einer konkreten Kundenanfrage automatisch eine Benachrichtigung an `adam_kraus@icloud.com` senden. Das gilt nur für erkannte echte Kontakt- oder Projektanfragen.
 
-Die Benachrichtigung enthält – soweit aus dem Chat verfügbar – den Zeitpunkt, Name und E-Mail des Kunden, die aufgerufene Seite, das verwendete KI-Modell, den auslösenden Satz und den bisherigen Gesprächskontext.
+Der Versand erfolgt serverseitig über die **Brevo HTTP API**. Dadurch ist kein SMTP-Zugriff aus der Supabase Edge Function nötig. Die API-Anbindung verwendet HTTPS und bleibt damit unabhängig von SMTP-Port-Beschränkungen.
 
-Der Versand erfolgt serverseitig über das vorhandene iCloud-Mailkonto. Die SMTP-Zugangsdaten werden ausschließlich als Supabase Edge-Function-Secrets gespeichert und niemals in GitHub oder im Browser veröffentlicht.
+### Brevo-Einrichtung
 
-Für iCloud Mail wird der SMTP-Server `smtp.mail.me.com` auf Port `587` mit TLS/STARTTLS und einem App-spezifischen Passwort verwendet.
+1. Kostenloses Brevo-Konto erstellen.
+2. Als Absender `kraus-digital@proton.me` registrieren und die Bestätigungs-Mail bestätigen.
+3. Unter **SMTP & API → API Keys** einen neuen API-Key erzeugen.
+4. Den Key ausschließlich als Supabase Edge-Function-Secret `BREVO_API_KEY` speichern.
+5. Die Funktion `kds-contact-email-v2` deployen bzw. aktualisieren.
 
-## Kostenmodell
+Der API-Key darf niemals in `app.js`, GitHub Pages oder anderen öffentlichen Dateien stehen.
 
-Für den E-Mail-Versand wird kein Resend-, SendGrid-, Mailgun- oder anderer kostenpflichtiger E-Mail-Dienst verwendet. Es wird das vorhandene iCloud-Mailkonto genutzt.
+Der aktuelle kostenlose Brevo-Tarif erlaubt 300 E-Mail-Versendungen pro Tag. Für normale KDS-AI-Kontaktanfragen ist das mehr als ausreichend.
 
-Damit gibt es für diesen Versandweg keine zusätzliche E-Mail-Dienstgebühr. Die Nutzung von Supabase selbst unterliegt weiterhin den jeweiligen Grenzen des verwendeten Supabase-Tarifs.
+## Version 5.9.1
 
-## Einrichtung der Kontakt-Mail
-
-In Supabase müssen für die Edge Function `kds-contact-email-v2` diese Secrets hinterlegt werden:
-
-`KDS_SMTP_USER` = vollständige iCloud-Mailadresse
-
-`KDS_SMTP_PASSWORD` = App-spezifisches Apple-Passwort
-
-Das normale Apple-Account-Passwort darf dafür nicht in GitHub, JavaScript oder der Website hinterlegt werden.
-
-## Version 5.4
-
-- Backup von v5.2 unter `versions/v5.2/`
-- Automatische Erkennung konkreter Kunden-/Projektanfragen
-- Ausführliche Kontaktbenachrichtigungen an die KDS-Admin-Adresse
-- iCloud SMTP statt kostenpflichtigem Mail-API-Anbieter
-- Keine SMTP-Zugangsdaten im Frontend
-- Kontaktversand funktioniert über Hauptmodell, Cloudflare-Ausweichpfad und Cloudflare-Modellauswahl
-
-
-## Version 5.7
-
-- Angebots- und Projektanfragen werden im Chat ausdrücklich als Kontaktanfragen erkannt.
-- Erkannte Anfragen werden über die serverseitige KDS-Kontaktfunktion an `adam_kraus@icloud.com` weitergeleitet.
-- Die KI antwortet nach erfolgreicher Weiterleitung nicht mehr fälschlich, dass sie keine Nachrichten versenden könne.
-- Gesprächskontext, Seite und ausgewähltes Modell werden für die Kontaktanfrage mitgegeben.
-
-## Version 5.0 Stable
-
-- Eigener, eingefrorener Stable-Stand für einen zuverlässigen Rückfall.
-- Eigene Kopien von Oberfläche, Chat-Logik und Styles.
-- Keine Abhängigkeit von späteren Änderungen an der aktuellen Hauptversion.
-- Über die Website-Versionsauswahl direkt erreichbar.
-
-## Stabilitätskorrekturen im aktuellen Stand
-
-- Formular-Submit verwendet wieder einen echten submit-Event-Listener; dadurch wird beim Senden keine normale Browser-Formularnavigation ausgelöst.
-- Der Button „Aktualisieren“ erzwingt einen neuen Dokumentaufruf mit einem eindeutigen Cache-Parameter.
-- Die Versionsauswahl enthält 5.0 Stable zusätzlich zur aktuellen Version und den vorhandenen Archiven.
-- Die Stable-Version verwendet eigene Versionsdateien und eigene Cache-Busting-Werte.
-- Keine Secrets oder API-Schlüssel wurden in das Frontend aufgenommen.
-- Doppelte automatische Begrüßungen im ersten Chat-Beitrag werden im Frontend entfernt, damit die KDS-Willkommensnachricht nur einmal erscheint.
-
-## Version 5.9
-
-- Neue serverseitige Kontakt-Mailfunktion kds-contact-email-v2.
-- KDS AI verwendet diese Funktion für erkannte Kunden- und Projektanfragen.
-- SMTP-Konfiguration unterstützt KDS_SMTP_USER / KDS_SMTP_PASSWORD sowie die Legacy-Namen SMTP_USER / SMTP_PASSWORD.
-- Die Mailfunktion prüft die SMTP-Verbindung vor dem Versand und liefert bei fehlender Konfiguration einen eindeutigen Fehler.
-- Einfacher Missbrauchsschutz und eingeschränkte CORS-Herkunft für den öffentlichen Kontakt-Endpunkt.
-- Sichtbare KDS-Bezeichnung auf KDS – Kraus Development Systems aktualisiert.
-
-
-## Version 5.9
-
-- Neues direkt integriertes Kontaktformular im KDS-AI-Frontend.
-- Kunden können Name, E-Mail, Projekt und Nachricht an KDS übermitteln.
-- Die Kontaktfunktion sendet die Angaben serverseitig über iCloud SMTP an `adam_kraus@icloud.com`.
-- Die Mail enthält zusätzlich Zeitpunkt, Seite, KI-Modell, Auslöser und Gesprächskontext.
-- SMTP-Verbindung nutzt Port 587 mit STARTTLS und versucht bei Verbindungsproblemen zusätzlich Port 465 mit TLS.
-- SMTP-Zugangsdaten bleiben ausschließlich in Supabase Secrets.
+- Kontakt-Mailversand auf Brevo HTTPS API vorbereitet.
+- iCloud-SMTP-Abhängigkeit aus der Kontaktfunktion entfernt.
+- Bestehender Frontend-Endpunkt bleibt unverändert.
+- Keine API-Schlüssel im Repository.
