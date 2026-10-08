@@ -85,7 +85,7 @@ API-Schlüssel und andere geheime Zugangsdaten gehören ausschließlich ins Back
 
 ## Status
 
-**KDS AI v5.9.1** befindet sich aktuell im Aufbau und wird schrittweise erweitert.
+**KDS AI v5.9.1** ist als aktuelle Version eingerichtet. Der Brevo-Kontaktversand ist auf der produktiven Supabase-Funktion `kds-contact-email-v2` aktiviert.
 
 ## Automatische Kontaktanfragen
 
