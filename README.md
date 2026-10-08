@@ -6,14 +6,18 @@ Ein KI-gestützter Assistent für KDS.
 
 ## Aktuelle Version
 
-**v5.9** (aktuell)
+**v5.9.1** (aktuell)
 
 **v5.0 Stable** ist zusätzlich als eingefrorene stabile Version unter `versions/v5.0-stable/` verfügbar.
 
 ## Funktionen
 
-- KDS-Infos können automatisch die direkte WhatsApp-Kontaktmöglichkeit enthalten\n- Sicherer Admin-Modus über the internen Admin-Zugang mit serverseitigem Admin-Token\n- Admin kann dauerhafte kundenrelevante Informationen per Chat eingeben\n- KI extrahiert Fakten aus Admin-Nachrichten und speichert sie in der Supabase-Wissensbasis\n- Gespeicherte Fakten werden bei späteren Kundenfragen wieder als Wissensbasis verwendet\n- Geheimnisartige Inhalte wie API-Keys, Tokens und Passwörter werden nicht als Wissensfakten gespeichert
-
+- KDS-Infos können automatisch die direkte WhatsApp-Kontaktmöglichkeit enthalten
+- Sicherer Admin-Modus über den internen Admin-Zugang mit serverseitigem Admin-Token
+- Admin kann dauerhafte kundenrelevante Informationen per Chat eingeben
+- KI extrahiert Fakten aus Admin-Nachrichten und speichert sie in der Supabase-Wissensbasis
+- Gespeicherte Fakten werden bei späteren Kundenfragen wieder als Wissensbasis verwendet
+- Geheimnisartige Inhalte wie API-Keys, Tokens und Passwörter werden nicht als Wissensfakten gespeichert
 - Moderne GitHub-Pages-Oberfläche
 - Chat mit dem KDS AI-Assistenten
 - KDS-Wissensdatenbank mit Leistungen und Preisen
@@ -38,7 +42,7 @@ Supabase Edge Function
     ↓
 KDS-Wissensdatenbank + KI
     ↓
-KDS-Kontaktfunktion → iCloud SMTP → adam_kraus@icloud.com
+KDS-Kontaktfunktion → Brevo HTTPS API → adam_kraus@icloud.com
 ```
 
 ## Dateien
@@ -48,6 +52,7 @@ KDS-Kontaktfunktion → iCloud SMTP → adam_kraus@icloud.com
 - `app.js` – Chat-Logik, Verbindung zum Backend, Kontakt-Erkennung und manuelles Aktualisieren
 - `IMG_3297.jpeg` – KDS-Logo für Website, Browser-Icon und Social Sharing
 - `supabase/functions/ai-chat/` – KI-Backend
+- `supabase/functions/kds-contact-email-v2/` – Kontakt-E-Mailversand über Brevo
 - `README.md` – Projektdokumentation
 
 ## Kontaktregeln der KDS-KI
@@ -62,11 +67,11 @@ Die administrative/private E-Mail `adam_kraus@icloud.com` darf genannt werden, w
 
 ## Versionierung
 
-Die Versionsnummer wird bei Änderungen am Frontend aktualisiert.
+Die aktuelle Version ist **v5.9.1**.
 
-Beispiel:
+Die Versionsnummer wird bei relevanten Änderungen am Frontend oder Backend aktualisiert.
 
-`1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6 → ... → 1.9 → 2.0`
+`1.1 → 1.2 → 1.3 → ... → 5.0 Stable → 5.9 → 5.9.1`
 
 Größere Funktionsänderungen können einen Sprung auf eine neue Hauptversion auslösen.
 
@@ -80,8 +85,7 @@ API-Schlüssel und andere geheime Zugangsdaten gehören ausschließlich ins Back
 
 ## Status
 
-KDS AI befindet sich aktuell im Aufbau und wird schrittweise erweitert.
-
+**KDS AI v5.9.1** befindet sich aktuell im Aufbau und wird schrittweise erweitert.
 
 ## Automatische Kontaktanfragen
 
@@ -94,16 +98,18 @@ Der Versand erfolgt serverseitig über die **Brevo HTTP API**. Dadurch ist kein 
 1. Kostenloses Brevo-Konto erstellen.
 2. Als Absender `kraus-digital@proton.me` registrieren und die Bestätigungs-Mail bestätigen.
 3. Unter **SMTP & API → API Keys** einen neuen API-Key erzeugen.
-4. Den Key ausschließlich als Supabase Edge-Function-Secret `BREVO_API_KEY` speichern.
+4. Den Key ausschließlich als Supabase Edge-Function-Secret **`KDS-AI-Email`** speichern.
 5. Die Funktion `kds-contact-email-v2` deployen bzw. aktualisieren.
 
 Der API-Key darf niemals in `app.js`, GitHub Pages oder anderen öffentlichen Dateien stehen.
 
-Der aktuelle kostenlose Brevo-Tarif erlaubt 300 E-Mail-Versendungen pro Tag. Für normale KDS-AI-Kontaktanfragen ist das mehr als ausreichend.
+Der kostenlose Brevo-Versand wird ausschließlich für technische KDS-AI-Kontaktanfragen verwendet; eine Kampagne ist dafür nicht erforderlich.
 
 ## Version 5.9.1
 
-- Kontakt-Mailversand auf Brevo HTTPS API vorbereitet.
+- Kontakt-Mailversand vollständig auf die Brevo HTTPS API ausgerichtet.
 - iCloud-SMTP-Abhängigkeit aus der Kontaktfunktion entfernt.
+- Der vorhandene Supabase-Secretname `KDS-AI-Email` wird verwendet.
 - Bestehender Frontend-Endpunkt bleibt unverändert.
 - Keine API-Schlüssel im Repository.
+- README und Projektstatus auf v5.9.1 aktualisiert.
